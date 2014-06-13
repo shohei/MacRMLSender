@@ -17,7 +17,7 @@ class MyWidget(QtGui.QWidget):
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.showDialog)
-        status,output = commands.getstatusoutput("ls /dev/tty.usb*")
+        status,output = commands.getstatusoutput("ls /dev/tty.*")
         output = output.split("\n")
         self.combo = QtGui.QComboBox(self)
         self.combo.addItem("select serial port")
