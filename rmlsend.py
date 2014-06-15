@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#-*- coding:utf-8- *-
 import sys
 from PyQt4 import QtGui
 import commands
@@ -38,6 +40,9 @@ class MyWidget(QtGui.QWidget):
         self.setLayout(vbox)
         self.setWindowTitle("Mac RML Sender")
         self.show()
+        #self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.raise_()
+        self.activateWindow()
     def sendrml(self):
         selected_port = self.combo.currentText()
         ser = serial.Serial(port=selected_port,baudrate=9600,bytesize=8,parity='N',stopbits=1,timeout=None,xonxoff=0,rtscts=True,writeTimeout=None,dsrdtr=True)
