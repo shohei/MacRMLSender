@@ -1,14 +1,57 @@
 #!/usr/bin/env python
 #-*- coding:utf-8- *-
 import sys
-from PyQt4 import QtGui
+from PyQt4 import QtGui,QtCore
 import commands
 import serial
 
-class MyWidget(QtGui.QWidget):
-    def __init__(self):
-        super(MyWidget,self).__init__()
+class MyMainWindow(QtGui.QMainWindow):
+    def __init__(self,parent=None):
+        super(MyMainWindow,self).__init__(parent)
+        self.main_widget = MyWidget(self)
+        self.setCentralWidget(self.main_widget)
+        self.initMenu()
+
+    def initMenu(self):
+        quitAction = QtGui.QAction('&Quit', self)
+        quitAction.setShortcut('Ctrl+Q')
+        quitAction.setStatusTip('Exit application')
+        self.connect(quitAction, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
+        
+        aboutAction = QtGui.QAction('&About',  self)
+        aboutAction.setStatusTip('About App ...')
+        self.connect(aboutAction, QtCore.SIGNAL("triggered()"), self.showAbout)
+        
+        menuBar = self.menuBar()
+        menuBar.clear()
+        helpItem = menuBar.addMenu('&Help')
+        helpItem.addAction(aboutAction)
+
+#TODO: creating instance does not showing dialog
+    def showAbout(self):
+        d = dialogWidget(self)
+        d.show()
+        d.raise_()
+        d.activateWindow()
+
+#TODO : This about dialog not displaying
+class dialogWidget(QtGui.QWidget):
+    def __init__(self,parent=None):
+        super(dialogWidget,self).__init__(parent)
         self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle("About Mac RML Sender")
+        label = QtGui.QLabel("About this software",self)
+        self.setGeometry(200,200,200,200)
+        self.show()
+
+
+class MyWidget(QtGui.QWidget):
+    def __init__(self,parent):
+        super(MyWidget,self).__init__(parent)
+        self.initUI()
+
     def initUI(self):
         openBtn= QtGui.QPushButton("open .rml",self)
         openBtn.clicked.connect(self.showDialog)
@@ -39,10 +82,7 @@ class MyWidget(QtGui.QWidget):
         vbox.addLayout(hbox2)
         self.setLayout(vbox)
         self.setWindowTitle("Mac RML Sender")
-        self.show()
-        #self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-        self.raise_()
-        self.activateWindow()
+
     def sendrml(self):
         selected_port = self.combo.currentText()
         ser = serial.Serial(port=selected_port,baudrate=9600,bytesize=8,parity='N',stopbits=1,timeout=None,xonxoff=0,rtscts=True,writeTimeout=None,dsrdtr=True)
@@ -56,10 +96,15 @@ class MyWidget(QtGui.QWidget):
         with f:    
             data = f.read()
             self.rml = data
+    def showAbout(self):
+        pass
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    w = MyWidget()
+    w = MyMainWindow()
+    w.show()
+    w.raise_()
+    w.activateWindow()
     sys.exit(app.exec_())
 
 if __name__=="__main__":
