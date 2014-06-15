@@ -1,6 +1,13 @@
 #Mac RML Sender
 
 ## How to use
-$ python gui.py
+```
+$ python rmlsend.py
+```
+or copy the file renamed as rmlsend into your /usr/local/bin
 
+And
+```
+$ rmlsend
+```
 ![screenshot](screenshot.png)
