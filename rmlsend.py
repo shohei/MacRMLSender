@@ -90,7 +90,7 @@ class MyWidget(QtGui.QWidget):
         self.setWindowTitle("Mac RML Sender")
 
     def sendrml(self):
-        selected_port = self.combo.currentText()
+        selected_port = str(self.combo.currentText())
         ser = serial.Serial(port=selected_port,baudrate=9600,bytesize=8,parity='N',stopbits=1,timeout=None,xonxoff=0,rtscts=True,writeTimeout=None,dsrdtr=True)
         ser.write(self.rml)
 
