@@ -10,6 +10,8 @@ import sys
 from PyQt4 import QtGui,QtCore
 import commands
 import serial
+import time
+import threading
 
 class MyMainWindow(QtGui.QMainWindow):
     def __init__(self,parent=None):
@@ -91,8 +93,9 @@ class MyWidget(QtGui.QWidget):
 
     def sendrml(self):
         selected_port = str(self.combo.currentText())
-        ser = serial.Serial(port=selected_port,baudrate=9600,bytesize=8,parity='N',stopbits=1,timeout=None,xonxoff=0,rtscts=True,writeTimeout=None,dsrdtr=True)
-        ser.write(self.rml)
+        self.ser = serial.Serial(port=selected_port,baudrate=115200,bytesize=8,parity='N',stopbits=1,timeout=None,xonxoff=0,rtscts=False,writeTimeout=None,dsrdtr=False)
+        self.t2 = threading.Thread(target=self.thread2)
+        self.t2.start()
 
     def showDialog(self):
         fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file','~/')
@@ -102,17 +105,31 @@ class MyWidget(QtGui.QWidget):
         with f:    
             data = f.read()
             self.rml = data
+
     def showAbout(self):
         pass
 
-def main():
-    app = QtGui.QApplication(sys.argv)
-    w = MyMainWindow()
-    w.show()
-    w.raise_()
-    w.activateWindow()
+    def thread2(self):
+        while True:
+            sentences = self.rml.split('\n')
+            for s in sentences:
+                s = s+ '\n'
+                print(s)
+                self.ser.write(s)
+                time.sleep(1)
+
+def main(_w):
+    _w.show()
+    _w.raise_()
+    _w.activateWindow()
     sys.exit(app.exec_())
 
 if __name__=="__main__":
-    main()
-
+    app = QtGui.QApplication(sys.argv)
+    w = MyMainWindow()
+    try:
+        main(w)
+    except:
+        #print "\nstop thread2"
+        w.main_widget.t2._Thread__stop()
+        exit()
