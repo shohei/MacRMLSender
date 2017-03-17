@@ -110,13 +110,12 @@ class MyWidget(QtGui.QWidget):
         pass
 
     def thread2(self):
-        while True:
-            sentences = self.rml.split('\n')
-            for s in sentences:
-                s = s+ '\n'
-                print(s)
-                self.ser.write(s)
-                time.sleep(1)
+        sentences = self.rml.split('\n')
+        for s in sentences:
+           s = s+ '\n'
+           print(s)
+           self.ser.write(s)
+           time.sleep(1)
 
 def main(_w):
     _w.show()
