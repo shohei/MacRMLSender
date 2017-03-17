@@ -17,7 +17,7 @@ for c in coords:
     x = c[0]
     y = c[1] 
     z = 0
-    string = "#{0} G204 X{1} Y{2} Z{3} F100\n".format(counter,x,y,z)
+    string = "#{0} G0 X{1} Y{2} Z{3} F100\n".format(counter,x,y,z)
     fout.write(string)   
     counter+=1
 
